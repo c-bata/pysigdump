@@ -1,8 +1,10 @@
 venv/
+.mypy_cache/
 
 *.pyc
 __pycache__/
 
+dist/
 sdist/
 var/
 *.egg-info/

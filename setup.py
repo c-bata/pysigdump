@@ -22,7 +22,7 @@ setup(
     version=__version__,
     author=__author__,
     author_email=__author_email__,
-    url='https://github.com/c-bata/sigdump',
+    url='https://github.com/c-bata/pysigdump',
     description='Use signal to show stacktrace of a Python process',
     long_description=README,
     classifiers=__classifiers__,

@@ -12,12 +12,8 @@ if TYPE_CHECKING:
     from typing import TextIO
     from types import FrameType
 
-sigdump_signal: 'Optional[str, None]' = os.getenv("SIGDUMP_SIGNAL", None)
-sigdump_path: 'Optional[str, None]' = os.getenv("SIGDUMP_PATH", None)
-
-
-if sigdump_path is None:
-    sigdump_path = f"/tmp/sigdump-{os.getpid()}.log"
+sigdump_signal: 'Optional[str]' = os.getenv("SIGDUMP_SIGNAL", None)
+sigdump_path: str = os.getenv("SIGDUMP_PATH", f"/tmp/sigdump-{os.getpid()}.log")
 
 
 def dump_backtrace(f: 'TextIO', frame: 'FrameType') -> None:
@@ -30,9 +26,9 @@ def dump_gc_stat(f: 'TextIO') -> None:
     f.write("  GC stat:\n")
     for i, generation in enumerate(gc.get_stats()):
         f.write(f"    Generation {i}:\n")
-        f.write(f"      collections : {generation.get('collections')}\n")
-        f.write(f"      collected   : {generation.get('collected')}\n")
-        f.write(f"      uncollected : {generation.get('uncollected')}\n")
+        f.write(f"      collections   : {generation.get('collections')}\n")
+        f.write(f"      collected     : {generation.get('collected')}\n")
+        f.write(f"      uncollectable : {generation.get('uncollectable')}\n")
 
 
 def dump(f: 'TextIO', frame: 'FrameType') -> None:
@@ -63,5 +59,9 @@ def enable(verbose: bool = True) -> None:
     signal.signal(signal_no, handler)
 
     if verbose:
-        print(f"SIGDUMP is enabled. The result is exported to "
-              f"{sigdump_path if sigdump_path != '-' else 'stdout'}.")
+        display_path = sigdump_path
+        if display_path == '-':
+            display_path = 'stdout'
+        elif display_path == '+':
+            display_path = 'stderr'
+        print(f"SIGDUMP is enabled. The result is exported to {display_path}.")
