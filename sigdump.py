@@ -1,11 +1,16 @@
 import gc
 import os
 import signal
+import sys
+import traceback
+from datetime import datetime
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Optional
     from typing import TextIO
+    from types import FrameType
 
 sigdump_signal: 'Optional[str, None]' = os.getenv("SIGDUMP_SIGNAL", None)
 sigdump_path: 'Optional[str, None]' = os.getenv("SIGDUMP_PATH", None)
@@ -15,16 +20,40 @@ if sigdump_path is None:
     sigdump_path = f"/tmp/sigdump-{os.getpid()}.log"
 
 
-def print_gc_stats(f: 'TextIO'):
-    f.write("GC stat:\n")
-    for stat in gc.get_stats():
-        f.write(f"  {stat}\n")
+def dump_backtrace(f: 'TextIO', frame: 'FrameType') -> None:
+    f.write("  Stacktrace:\n")
+    traceback.print_stack(frame, file=f)
+    f.write("\n")
 
 
-def handler(signum, frame):
+def dump_gc_stat(f: 'TextIO') -> None:
+    f.write("  GC stat:\n")
+    for i, generation in enumerate(gc.get_stats()):
+        f.write(f"    Generation {i}:\n")
+        f.write(f"      collections : {generation.get('collections')}\n")
+        f.write(f"      collected   : {generation.get('collected')}\n")
+        f.write(f"      uncollected : {generation.get('uncollected')}\n")
+
+
+def dump(f: 'TextIO', frame: 'FrameType') -> None:
+    f.write(f"Sigdump at {datetime.now()} process {os.getpid()}\n\n")
+    dump_backtrace(f, frame)
+    dump_gc_stat(f)
+    f.flush()
+
+
+def handler(signum: int, frame: 'FrameType') -> None:
+    if sigdump_path == "-":
+        dump(sys.stdout, frame)
+        return
+
+    if sigdump_path == "+":
+        dump(sys.stderr, frame)
+        return
+
     with open(sigdump_path, 'a') as f:
-        print_gc_stats(f)
-        f.flush()
+        dump(f, frame)
+        return
 
 
 def enable(verbose: bool = True) -> None:
