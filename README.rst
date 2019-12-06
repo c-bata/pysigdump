@@ -11,9 +11,8 @@ Server example to enable sigdump is below:
 .. code-block:: python
 
    import os
-   from wsgiref.simple_server import make_server
-
    import sigdump
+   from wsgiref.simple_server import make_server
 
 
    def application(env, start_response):
@@ -22,9 +21,7 @@ Server example to enable sigdump is below:
 
 
    if __name__ == '__main__':
-       sigdump.enable(verbose=True)  # just calling sigdump.signal()
-
-       print("pid:", os.getpid())
+       sigdump.enable(verbose=True)  # just calling sigdump.signal().
        httpd = make_server('', 8000, application)
        httpd.serve_forever()
 
@@ -32,7 +29,6 @@ Server example to enable sigdump is below:
 
    $ pip install sigdump
    $ python example/wsgi.py
-   pid: 57650
    SIGDUMP is enabled. The result is exported to /tmp/sigdump-57650.log.
 
 Then sending a ``SIGCONT`` signal.
