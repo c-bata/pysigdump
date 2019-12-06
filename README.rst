@@ -1,12 +1,12 @@
 pysigdump: sigdump for Python
 =============================
 
-Use signal to show stacktrace and garbage collection stats of a Python process like `frsyuki/sigdump <https://github.com/frsyuki/sigdump>`_ .
+Use signal to show stacktrace and garbage collection stats of a Python process like `frsyuki/sigdump <https://github.com/frsyuki/sigdump>`_.
 
 Usage
 -----
 
-Example code to enable sigdump in a server is below:
+Server example to enable sigdump is below:
 
 .. code-block:: python
 
@@ -36,7 +36,7 @@ Please set ``SIGDUMP_SIGNAL`` environment variable if you want to change the sig
    $ kill -s SIGCONT <pid>
 
 See ``/tmp/sigdump-<pid>.log``.
-Please set `SIGDUMP_PATH` environment variable if you want to change the output path (default: ``/tmp/sigdump-<pid>.log``).
+Please set ``SIGDUMP_PATH`` environment variable if you want to change the output path (default: ``/tmp/sigdump-<pid>.log``).
 You can set ``"-"`` here to dump to ``STDOUT``, or ``"+"`` to ``STDERR``.
 
 .. code-block:: console
