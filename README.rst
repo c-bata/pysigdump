@@ -33,7 +33,7 @@ Server example to enable sigdump is below:
    $ pip install sigdump
    $ python example/wsgi.py
    pid: 57650
-   SIGDUMP is enabled. The result is exported to /tmp/sigdump-82323.log.
+   SIGDUMP is enabled. The result is exported to /tmp/sigdump-57650.log.
 
 Then sending a ``SIGCONT`` signal.
 Please set ``SIGDUMP_SIGNAL`` environment variable if you want to change the signal.
@@ -81,7 +81,7 @@ LICENSE
 
    MIT License
 
-   Copyright (c) 2016 Masashi SHIBATA
+   Copyright (c) 2019 Masashi SHIBATA
 
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
